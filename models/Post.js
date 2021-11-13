@@ -16,9 +16,13 @@
          title: {
              type: DataTypes.STRING,
              allowNull: false,
+         },
+         post_url: {
+             type: DataTypes.STRING,
+             allowNull: false,
              validate: {
-                 isURL: true
-             }
+                isURL: true
+            }
          },
          user_id: {
              type: DataTypes.INTEGER,
@@ -26,7 +30,7 @@
                  model: 'user',
                  key: 'id'
              }
-         } 
+         },
      },
      {
         sequelize,
@@ -34,6 +38,6 @@
         underscored: true,
         modelName: 'post'
     }
-)
+);
 
 module.exports = Post;
