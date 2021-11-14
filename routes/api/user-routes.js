@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { User, Post, Vote } = require('../../models');
+const { User, Post, Vote, Comment} = require('../../models');
 
 //GET /api/users
 router.get('/', (req, res) => {
@@ -26,11 +26,20 @@ router.get('/:id', (req, res) => {
                 model: Post,
                 attributes: ['id', 'title', 'post_url', 'created_at']
             },
+            //include the Comment model here:
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'created_at'],
+                include: {
+                    model: Post,
+                    attributes:['title']
+                }
+            },
             {
                 model: Post,
                 attributes: ['title'],
                 through: Vote,
-                as: 'votes_posts'
+                as: 'voted_posts'
             }
         ]
     })
@@ -114,14 +123,13 @@ router.put('/:id', (req, res) => {
 });
 
 //DELETE /api/users/1
-router.delete('/:id', (req, res) => {
     router.delete('/:id', (req, res)=> {
         User.destroy({
             where: {
                 id: req.params.id
             }
         })
-    })
+   
     .then(dbUserData => {
         if(!dbUserData) {
             res.status(404).json({message: 'No user found with this id'})
@@ -133,6 +141,6 @@ router.delete('/:id', (req, res) => {
         console.lof(err);
         res.status(500).json(err);
     })
-});
+})
 
 module.exports = router;
